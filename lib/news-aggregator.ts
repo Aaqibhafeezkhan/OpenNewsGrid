@@ -7,7 +7,7 @@ import { isValidHttpUrl } from "./url-utils";
 const CACHE_TTL = 5 * 60 * 1000;
 const MAX_FEEDS = 60;
 
-function cleanArticles(articles: NewsArticle[]): NewsArticle[] {
+export function cleanArticles(articles: NewsArticle[]): NewsArticle[] {
   return articles
     .filter((article) => article.title?.trim() && isValidHttpUrl(article.url))
     .filter((article) => !article.id.startsWith("mock-"))
