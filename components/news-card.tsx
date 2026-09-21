@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { ResilientImage } from "@/components/resilient-image";
 import { Clock, ExternalLink, Globe2 } from "lucide-react";
 import { NewsArticle, AggregatedStory } from "@/types";
 import { formatTimeAgo, estimateReadTime, truncateText, getFlagEmoji } from "@/lib/utils";
@@ -60,7 +60,7 @@ export function NewsCard({ article, story, variant = "default" }: NewsCardProps)
         {content(
           <div className="grid gap-0 md:grid-cols-2">
             <div className="relative h-64 min-h-[300px] overflow-hidden md:h-full">
-              <Image src={data.imageUrl} alt={data.headline} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 50vw" priority />
+              <ResilientImage src={data.imageUrl} alt={data.headline} fallbackLabel={`Image unavailable for ${data.headline}`} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 50vw" priority />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
                 <span className="mb-2 inline-block rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">{data.category}</span>
@@ -91,7 +91,7 @@ export function NewsCard({ article, story, variant = "default" }: NewsCardProps)
         {content(
           <div className="flex flex-1 gap-4 p-4">
             <div className="relative h-24 w-32 shrink-0 overflow-hidden rounded-lg md:h-28 md:w-40">
-              <Image src={data.imageUrl} alt={data.headline} fill className="object-cover transition-transform duration-300 group-hover:scale-105" sizes="160px" />
+              <ResilientImage src={data.imageUrl} alt={data.headline} fill className="object-cover transition-transform duration-300 group-hover:scale-105" sizes="160px" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400"><span className="font-medium text-primary">{data.category}</span><span>•</span>{sourceBadge}</div>
@@ -109,7 +109,7 @@ export function NewsCard({ article, story, variant = "default" }: NewsCardProps)
       <article className="group">
         {content(
           <div className="flex items-start gap-3 border-b border-gray-100 py-3 last:border-0 dark:border-gray-700">
-            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg"><Image src={data.imageUrl} alt={data.headline} fill className="object-cover" sizes="64px" /></div>
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg"><ResilientImage src={data.imageUrl} alt={data.headline} fill className="object-cover" sizes="64px" /></div>
             <div className="min-w-0 flex-1">
               <h4 className="line-clamp-2 text-sm font-medium text-gray-900 transition-colors group-hover:text-primary dark:text-white">{data.headline}</h4>
               <div className="mt-1 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400"><span className="truncate">{sourceLabel}</span><span>•</span><span>{formatTimeAgo(data.publishedAt)}</span></div>
@@ -125,7 +125,7 @@ export function NewsCard({ article, story, variant = "default" }: NewsCardProps)
       {content(
         <>
           <div className="image-zoom relative h-48 overflow-hidden">
-            <Image src={data.imageUrl} alt={data.headline} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+            <ResilientImage src={data.imageUrl} alt={data.headline} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
             <div className="absolute left-3 top-3"><span className="inline-block rounded bg-accent/90 px-2 py-1 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-sm">{data.category}</span></div>
           </div>

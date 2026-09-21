@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
+import { ResilientImage } from "@/components/resilient-image";
 import Link from "next/link";
 import { ArticleSkeleton } from "@/components/skeletons";
 import { ArrowLeft, ExternalLink, Share2, Clock, Calendar, Globe, Bookmark, ChevronRight } from "lucide-react";
@@ -113,7 +113,7 @@ function ArticleContent() {
 
       <header className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
         <div className="relative h-56 sm:h-72 md:h-80">
-          <Image src={article.imageUrl} alt={article.title} fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 768px" />
+          <ResilientImage src={article.imageUrl} alt={article.title} fallbackLabel={`Image unavailable for ${article.title}`} fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 768px" />
           <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/70 to-transparent" />
         </div>
 
