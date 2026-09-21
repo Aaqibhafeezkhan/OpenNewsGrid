@@ -24,7 +24,7 @@ export function ResilientImage({
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const { imageSrc, showFallback } = getResilientImageState(src, failedSrc);
 
-  if (showFallback) {
+  if (showFallback || !imageSrc) {
     return (
       <div
         role="img"
