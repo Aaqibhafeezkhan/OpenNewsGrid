@@ -7,12 +7,79 @@ import { isValidHttpUrl } from "./url-utils";
 const CACHE_TTL = 5 * 60 * 1000;
 const MAX_FEEDS = 60;
 
+export function normalizeArticleUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    parsed.hash = "";
+    parsed.hostname = parsed.hostname.toLowerCase().replace(/^www\./, "");
+
+    const trackingParams = new Set([
+      "fbclid",
+      "gclid",
+      "mc_cid",
+      "mc_eid",
+      "ref",
+      "ref_src",
+    ]);
+
+    for (const key of [...parsed.searchParams.keys()]) {
+      if (key.toLowerCase().startsWith("utm_") || trackingParams.has(key.toLowerCase())) {
+        parsed.searchParams.delete(key);
+      }
+    }
+
+    parsed.searchParams.sort();
+    parsed.pathname = parsed.pathname.replace(/\/+$/, "") || "/";
+    return parsed.toString();
+  } catch {
+    return url.trim().toLowerCase();
+  }
+}
+
+export function normalizeArticleTitle(title: string): string {
+  return title
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
 export function cleanArticles(articles: NewsArticle[]): NewsArticle[] {
-  return articles
+  const candidates = articles
     .filter((article) => article.title?.trim() && isValidHttpUrl(article.url))
     .filter((article) => !article.id.startsWith("mock-"))
-    .filter((article, index, list) => index === list.findIndex((item) => item.url === article.url))
-    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    .sort((a, b) => {
+      const publishedDifference =
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+      if (publishedDifference !== 0) return publishedDifference;
+
+      const sourceDifference = a.source.id.localeCompare(b.source.id);
+      if (sourceDifference !== 0) return sourceDifference;
+
+      return normalizeArticleUrl(a.url).localeCompare(normalizeArticleUrl(b.url));
+    });
+
+  const seenUrls = new Set<string>();
+  const seenTitles = new Set<string>();
+  const retained: NewsArticle[] = [];
+
+  for (const article of candidates) {
+    const urlKey = normalizeArticleUrl(article.url);
+    const titleKey = normalizeArticleTitle(article.title);
+
+    if (seenUrls.has(urlKey)) continue;
+
+    const duplicateTitle = titleKey.length >= 20 && seenTitles.has(titleKey);
+    if (duplicateTitle) continue;
+
+    seenUrls.add(urlKey);
+    if (titleKey.length >= 20) seenTitles.add(titleKey);
+    retained.push(article);
+  }
+
+  return retained;
 }
 
 function paginate<T>(items: T[], page: number, limit: number): T[] {
