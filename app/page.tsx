@@ -3,7 +3,7 @@ import { NewsGrid } from "@/components/news-grid";
 import { getFastHomepageStories } from "@/lib/fast-homepage-feed";
 import { getArticleHref, getSourceFavicon } from "@/lib/url-utils";
 import Link from "next/link";
-import Image from "next/image";
+import { ResilientImage } from "@/components/resilient-image";
 import { TrendingUp, Globe, ExternalLink } from "lucide-react";
 
 export const revalidate = 60;
@@ -16,7 +16,7 @@ function SidebarStory({ article }: { article: Awaited<ReturnType<typeof getFastH
   return (
     <Link href={href} className="group flex gap-3">
       <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded-md">
-        {article.imageUrl ? <Image src={article.imageUrl} alt={article.title} fill className="object-cover" sizes="80px" /> : null}
+        <ResilientImage src={article.imageUrl} alt={article.title} fallbackLabel={`Image unavailable for ${article.title}`} fill className="object-cover" sizes="80px" />
       </div>
       <div className="min-w-0">
         <h4 className="line-clamp-2 text-sm font-medium text-gray-900 transition-colors group-hover:text-primary dark:text-white">
